@@ -11,6 +11,6 @@ test.describe('AdventCircle Login Test', () => {
 
    
     await expect(page).toHaveURL(/dashboard|home|feeds/); 
-    console.log("✅ Logged in successfully!");
+    console.log(" Logged in successfully!");
   });
 });
