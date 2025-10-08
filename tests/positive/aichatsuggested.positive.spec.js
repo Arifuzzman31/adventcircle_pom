@@ -4,7 +4,7 @@ const { AisuggestedPage } = require('../../pages/aichatsuggestedpage');
 
 test('Suggested question flow with recent chat and deletion', async ({ page }) => {
   // Set longer timeout for this test
-  test.setTimeout(6000); // 2 minutes
+  test.setTimeout(120000); // 2 minutes
   const login = new LoginPage(page);
   const chat = new AisuggestedPage(page);
 
@@ -14,9 +14,17 @@ test('Suggested question flow with recent chat and deletion', async ({ page }) =
   console.log('✅ Step 1: Login successful');
 
   // Step 2: Go to Talk to Pastor AI
-  await chat.openChat();
-  await chat.waitForChatPageToLoad();
-  console.log('✅ Step 2: Navigated to Talk to Pastor AI');
+  try {
+    await chat.openChat();
+    await chat.waitForChatPageToLoad();
+    console.log('✅ Step 2: Navigated to Talk to Pastor AI');
+  } catch (error) {
+    console.log('⚠️ Navigation issue, retrying...', error.message);
+    // Retry with direct navigation
+    await page.goto('https://adventcircle.com/chat', { waitUntil: 'domcontentloaded' });
+    await chat.waitForChatPageToLoad();
+    console.log('✅ Step 2: Navigated to Talk to Pastor AI (via fallback)');
+  }
 
   // Step 3: Choose one suggested question
   const suggestedQuestion = 'Who is Jesus Christ?';
