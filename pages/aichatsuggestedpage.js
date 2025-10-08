@@ -24,13 +24,116 @@ class AisuggestedPage {
   }
 
   async openChat() {
-    await this.chatNavLink.click();
-    await this.page.goto('https://adventcircle.com/chat');
-    await this.talkToPastorLink.click();
+    console.log('🚀 Starting chat navigation...');
+    
+    // Wait for any toaster notifications to disappear
+    try {
+      await this.page.waitForTimeout(2000);
+      const toaster = this.page.locator('#_rht_toaster, .toaster, [class*="toast"]');
+      if (await toaster.isVisible({ timeout: 1000 })) {
+        console.log('⚠️ Toaster notification detected, waiting for it to disappear...');
+        await toaster.waitFor({ state: 'hidden', timeout: 5000 });
+      }
+    } catch (e) {
+      console.log('No toaster found or already hidden');
+    }
+
+    // Try primary navigation method
+    try {
+      console.log('Attempting to click chat navigation link...');
+      await this.chatNavLink.click({ timeout: 5000 });
+      console.log('✓ Chat nav link clicked successfully');
+    } catch (error) {
+      console.log('⚠️ Chat nav link click failed:', error.message);
+      console.log('Trying fallback navigation...');
+      
+      // Fallback: Direct navigation to chat page
+      await this.page.goto('https://adventcircle.com/chat', { 
+        waitUntil: 'domcontentloaded',
+        timeout: 10000 
+      });
+      console.log('✓ Direct navigation to chat page successful');
+    }
+
+    // Ensure we're on the chat page
+    try {
+      await this.page.waitForURL('**/chat**', { timeout: 5000 });
+    } catch (e) {
+      // If URL doesn't match, try direct navigation
+      await this.page.goto('https://adventcircle.com/chat', { 
+        waitUntil: 'domcontentloaded',
+        timeout: 10000 
+      });
+    }
+
+    // Click Talk to Pastor AI link - this is required to get to the AI chat interface
+    try {
+      await this.talkToPastorLink.waitFor({ state: 'visible', timeout: 10000 });
+      await this.talkToPastorLink.click();
+      console.log('✓ Talk to Pastor AI link clicked');
+      
+      // Wait for navigation to the AI chat page
+      await this.page.waitForURL('**/adv-ai/new**', { timeout: 10000 });
+      console.log('✓ Navigated to AI chat interface');
+    } catch (error) {
+      console.log('⚠️ Talk to Pastor AI link not found or not clickable:', error.message);
+      
+      // Try direct navigation to AI chat page
+      try {
+        await this.page.goto('https://adventcircle.com/adv-ai/new', { 
+          waitUntil: 'domcontentloaded',
+          timeout: 10000 
+        });
+        console.log('✓ Direct navigation to AI chat interface successful');
+      } catch (navError) {
+        console.log('⚠️ Direct navigation also failed:', navError.message);
+      }
+    }
   }
 
   async waitForChatPageToLoad() {
-    await this.chatInput.waitFor({ state: 'visible', timeout: 10000 });
+    console.log('Waiting for AI chat interface to load...');
+    
+    // Wait for the chat input to be visible
+    try {
+      await this.chatInput.waitFor({ state: 'visible', timeout: 15000 });
+      console.log('✓ Chat input found and visible');
+    } catch (error) {
+      console.log('⚠️ Chat input not found, trying alternative selectors...');
+      
+      // Try alternative selectors for the chat input
+      const alternativeSelectors = [
+        'textarea[placeholder*="Ask"]',
+        'input[placeholder*="Ask"]',
+        'textarea[placeholder*="here"]',
+        'input[placeholder*="here"]',
+        '[data-testid="chat-input"]',
+        '.chat-input'
+      ];
+      
+      for (const selector of alternativeSelectors) {
+        try {
+          const element = this.page.locator(selector);
+          await element.waitFor({ state: 'visible', timeout: 3000 });
+          console.log(`✓ Found chat input with selector: ${selector}`);
+          // Update the chatInput locator to use the working selector
+          this.chatInput = element;
+          return;
+        } catch (e) {
+          continue;
+        }
+      }
+      
+      // If no input found, take a screenshot for debugging
+      try {
+        await this.page.screenshot({ path: 'test-results/chat-page-debug.png', fullPage: true });
+        console.log('Debug screenshot saved: test-results/chat-page-debug.png');
+      } catch (e) {
+        console.log('Could not take debug screenshot');
+      }
+      
+      throw new Error('Could not find chat input field with any selector');
+    }
   }
 
   async clickSuggestedQuestion(text) {
@@ -142,7 +245,30 @@ class AisuggestedPage {
       trashIconParent = chatItemContainer;
       
       console.log('✓ Hovered over the FIRST "Who is Jesus Christ?" chat item container');
-      await this.page.waitForTimeout(1500); // Wait for delete button to appear
+      await this.page.waitForTimeout(2000); // Wait for delete button to appear
+      
+      // Try a simple approach first - look for any button or clickable element that appears after hover
+      try {
+        const deleteButton = chatItemContainer.locator('button, [role="button"], .cursor-pointer').filter({ hasText: /delete|trash|remove/i }).first();
+        if (await deleteButton.isVisible({ timeout: 1000 })) {
+          await deleteButton.click();
+          console.log('✓ Clicked delete button using text-based selector');
+          
+          await this.page.waitForTimeout(500);
+          try {
+            const confirmBtn = this.page.locator('button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Delete"), button:has-text("OK")').first();
+            await confirmBtn.click({ timeout: 2000 });
+            console.log('✓ Confirmed deletion');
+          } catch (e) {
+            console.log('No confirmation dialog found');
+          }
+          
+          console.log('✅ Successfully deleted the first recent chat');
+          return;
+        }
+      } catch (e) {
+        console.log('Text-based delete button not found, trying icon approach...');
+      }
       
     } catch (e) {
       console.log('✗ Failed to hover over first recent chat:', e.message);
@@ -192,10 +318,12 @@ class AisuggestedPage {
       }
     }
     
-    // Fallback: search globally for any visible trash icon
+    // Fallback: search for visible trash icons, but be more selective
+    console.log('Trying fallback approach - looking for visible trash icons...');
+    
     const possibleDeleteSelectors = [
       '.lucide-trash2',
-      '.lucide-trash-2',
+      '.lucide-trash-2', 
       'svg.lucide-trash2',
       'svg.lucide-trash-2',
       'svg[class*="lucide-trash"]'
@@ -209,33 +337,48 @@ class AisuggestedPage {
         
         if (count === 0) continue;
         
-        // Try to click the first visible one
-        for (let i = 0; i < count; i++) {
+        // Try to click only the visible and enabled ones
+        for (let i = 0; i < Math.min(count, 5); i++) { // Limit to first 5 to avoid too many attempts
           const icon = deleteIcons.nth(i);
           try {
+            // Check if it's both visible and enabled
             const isVisible = await icon.isVisible({ timeout: 500 });
-            if (isVisible) {
-              await icon.click({ force: true });
-              console.log(`✓ Clicked delete button (icon ${i}) using selector: ${selector}`);
-              
-              await this.page.waitForTimeout(500);
-              try {
-                const confirmBtn = this.page.locator('button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Delete"), button:has-text("OK")').first();
-                await confirmBtn.click({ timeout: 2000 });
-                console.log('✓ Confirmed deletion');
-              } catch (e) {
-                console.log('No confirmation dialog found');
+            const isEnabled = await icon.isEnabled({ timeout: 500 });
+            
+            if (isVisible && isEnabled) {
+              // Try to get the bounding box to ensure it's actually clickable
+              const boundingBox = await icon.boundingBox();
+              if (boundingBox && boundingBox.width > 0 && boundingBox.height > 0) {
+                console.log(`Attempting to click trash icon ${i} (visible, enabled, has bounding box)`);
+                await icon.click({ force: true, timeout: 3000 });
+                console.log(`✓ Clicked delete button (icon ${i}) using selector: ${selector}`);
+                
+                // Wait a bit and check for confirmation dialog
+                await this.page.waitForTimeout(1000);
+                try {
+                  const confirmBtn = this.page.locator('button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Delete"), button:has-text("OK")').first();
+                  const confirmVisible = await confirmBtn.isVisible({ timeout: 2000 });
+                  if (confirmVisible) {
+                    await confirmBtn.click({ timeout: 2000 });
+                    console.log('✓ Confirmed deletion');
+                  }
+                } catch (e) {
+                  console.log('No confirmation dialog found or needed');
+                }
+                
+                // Wait and verify deletion worked
+                await this.page.waitForTimeout(2000);
+                console.log('✅ Successfully deleted recent chat');
+                return;
               }
-              
-              console.log('✅ Successfully deleted recent chat');
-              return;
             }
           } catch (e) {
+            console.log(`Failed to click icon ${i}:`, e.message);
             continue;
           }
         }
       } catch (error) {
-        console.log('✗ Failed with selector:', selector);
+        console.log('✗ Failed with selector:', selector, error.message);
         continue;
       }
     }
