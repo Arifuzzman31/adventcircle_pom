@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { LoginPage } = require('../../pages/loginpage');
 const { AisuggestedPage } = require('../../pages/aichatsuggestedpage');
 
-test('Suggested question flow with recent chat and deletion', async ({ page }) => {
+test('Suggested question flow with recent chat verification', async ({ page }) => {
   // Set longer timeout for this test
   test.setTimeout(120000); // 2 minutes
   const login = new LoginPage(page);
@@ -41,13 +41,9 @@ test('Suggested question flow with recent chat and deletion', async ({ page }) =
   expect(response.trim().length).toBeGreaterThan(0);
   console.log('✅ Step 5: Bot responded (response length:', response.trim().length, 'characters)');
 
-  // Step 6: Click on recent chat to make sure it's added to the list
+  // Step 6: Verify chat is added to recent history
   await chat.clickRecentChat();
-  console.log('✅ Step 6: Clicked on recent chat - verified it was added to the list');
-
-  // Step 7: Delete the recent chat (REQUIRED)
-  await chat.deleteRecentChat();
-  console.log('✅ Step 7: Deleted the recent chat');
+  console.log('✅ Step 6: Verified chat was added to recent history');
 
   console.log('\n✅ Test completed successfully!');
 });

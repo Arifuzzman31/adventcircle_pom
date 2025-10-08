@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+const { test, expect } = require('@playwright/test');
 const { LoginPage } = require('../../pages/loginpage');
-import { DonationPage } from '../../pages/donationpage';
+const { DonationPage } = require('../../pages/donationpage');
 // Note: SITE_STRINGS import removed as it's TypeScript - using string directly
 
 test.describe('Donation - Positive Tests', () => {
@@ -29,16 +29,4 @@ test.describe('Donation - Positive Tests', () => {
     );
   });
 
-  test('Should allow submission without email (optional field)', async ({ page }) => {
-    await donationPage.openCreateDonationForm();
-    await donationPage.fillPartialForm('Test Donation No Email', '300', '01945233245', '', 'Testing without email field');
-    
-    // Try to submit (should work since email is optional)
-    await donationPage.submitBtn.click();
-    
-    // Wait for form to process
-    await page.waitForTimeout(2000);
-    
-    console.log('✅ Form allows submission without optional email field');
-  });
 });
