@@ -4,7 +4,7 @@ const { AisuggestedPage } = require('../../pages/aichatsuggestedpage');
 
 test('Suggested question flow with recent chat and deletion', async ({ page }) => {
   // Set longer timeout for this test
-  test.setTimeout(120000); // 2 minutes
+  test.setTimeout(6000); // 2 minutes
   const login = new LoginPage(page);
   const chat = new AisuggestedPage(page);
 

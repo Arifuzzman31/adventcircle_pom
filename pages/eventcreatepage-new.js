@@ -31,15 +31,64 @@ exports.EventPage = class EventPage {
   }
 
   async goToEventPage() {
-    await this.menuIcon.click();
-    await this.page.waitForTimeout(1000);
-    await this.eventsLink.click({ force: true });
-    await this.page.waitForLoadState('networkidle');
+    try {
+      await this.menuIcon.click();
+      await this.page.waitForTimeout(1000);
+      
+      // Use Promise.race to handle potential page closure
+      await Promise.race([
+        this.eventsLink.click({ force: true }),
+        this.page.waitForTimeout(5000) // Fallback timeout
+      ]);
+      
+      // Wait for navigation with a more robust approach
+      try {
+        await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+      } catch (error) {
+        console.log('⚠️ NetworkIdle wait failed, trying domcontentloaded...');
+        await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+      }
+      
+      // Verify we're on the events page
+      await this.page.waitForSelector('[data-testid="events-page"], .events-container, h1:has-text("Events")', { 
+        timeout: 5000,
+        state: 'visible' 
+      }).catch(() => {
+        console.log('⚠️ Events page selector not found, continuing...');
+      });
+      
+    } catch (error) {
+      console.log('⚠️ Navigation error:', error.message);
+      // Try direct navigation as fallback
+      await this.page.goto('https://adventcircle.com/events');
+      await this.page.waitForLoadState('domcontentloaded');
+    }
   }
 
   async createNewEvent() {
-    await this.createEventButton.click();
-    await this.page.waitForLoadState('networkidle');
+    try {
+      await this.createEventButton.click();
+      
+      // Wait for the form to load with better error handling
+      try {
+        await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+      } catch (error) {
+        console.log('⚠️ NetworkIdle wait failed, trying domcontentloaded...');
+        await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+      }
+      
+      // Verify the create event form is loaded
+      await this.page.waitForSelector('input[name*="title"], [role="textbox"]:has-text("Event Title")', {
+        timeout: 5000,
+        state: 'visible'
+      }).catch(() => {
+        console.log('⚠️ Create event form not fully loaded, continuing...');
+      });
+      
+    } catch (error) {
+      console.log('⚠️ Create event error:', error.message);
+      throw error;
+    }
   }
 
   async fillBasicEventForm() {

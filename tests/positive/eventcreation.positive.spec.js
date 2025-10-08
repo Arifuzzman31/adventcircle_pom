@@ -18,8 +18,13 @@ test('Church profile can create an event successfully', async ({ page }) => {
 
   // Step 2: Navigate to Events
   console.log('Step 2: Navigating to Events...');
-  await eventPage.goToEventPage();
-  console.log('✅ Events page loaded');
+  try {
+    await eventPage.goToEventPage();
+    console.log('✅ Events page loaded');
+  } catch (error) {
+    console.log('❌ Failed to navigate to events page:', error.message);
+    throw error;
+  }
 
   // Step 3: Create new event
   console.log('Step 3: Creating new event...');
