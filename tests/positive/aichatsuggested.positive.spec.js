@@ -45,5 +45,5 @@ test('Suggested question flow with recent chat verification', async ({ page }) =
   await chat.clickRecentChat();
   console.log(' Step 6: Verified chat was added to recent history');
 
-  console.log('\n✅ Test completed successfully!');
+  console.log('\n Test completed successfully!');
 });

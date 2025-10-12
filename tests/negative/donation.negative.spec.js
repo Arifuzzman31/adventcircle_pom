@@ -28,7 +28,7 @@ test.describe('Donation - Negative Tests', () => {
     await expect(donationPage.phoneInput).toBeVisible();
     await expect(donationPage.detailsInput).toBeVisible();
     
-    console.log('✅ Mandatory field validation working - form prevents submission with blank fields');
+    console.log(' Mandatory field validation working - form prevents submission with blank fields');
   });
 
   test('Should validate mandatory fields with asterisk indicators', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Donation - Negative Tests', () => {
     await donationPage.openCreateDonationForm();
     await donationPage.verifyMandatoryFieldIndicators();
     
-    console.log('✅ Asterisk indicators are correctly displayed for mandatory fields');
+    console.log(' Asterisk indicators are correctly displayed for mandatory fields');
   });
 
   test('Should not allow submission with only title filled', async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe('Donation - Negative Tests', () => {
     await expect(donationPage.titleInput).toBeVisible();
     await expect(donationPage.goalAmountInput).toBeVisible();
     
-    console.log('✅ Form validation prevents submission with incomplete mandatory fields');
+    console.log(' Form validation prevents submission with incomplete mandatory fields');
   });
 
   test('Should not allow submission with missing goal amount', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('Donation - Negative Tests', () => {
     // Should still be on the form
     await expect(donationPage.goalAmountInput).toBeVisible();
     
-    console.log('✅ Form validation prevents submission without goal amount');
+    console.log(' Form validation prevents submission without goal amount');
   });
 
   test('Should not allow submission with missing phone number', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('Donation - Negative Tests', () => {
     // Should still be on the form
     await expect(donationPage.phoneInput).toBeVisible();
     
-    console.log('✅ Form validation prevents submission without phone number');
+    console.log(' Form validation prevents submission without phone number');
   });
 
   test('Should not allow submission with missing details', async ({ page }) => {
@@ -81,6 +81,6 @@ test.describe('Donation - Negative Tests', () => {
     // Should still be on the form
     await expect(donationPage.detailsInput).toBeVisible();
     
-    console.log('✅ Form validation prevents submission without details');
+    console.log(' Form validation prevents submission without details');
   });
 });

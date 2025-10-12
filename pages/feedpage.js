@@ -72,7 +72,7 @@ class FeedsPage {
   }
 
   async verifyPostedImage() {
-    console.log('🔍 Verifying posted image...');
+    console.log(' Verifying posted image...');
     
     // Wait a bit for the post to fully render
     await this.page.waitForTimeout(2000);
