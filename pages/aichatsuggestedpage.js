@@ -24,14 +24,14 @@ class AisuggestedPage {
   }
 
   async openChat() {
-    console.log('🚀 Starting chat navigation...');
+    console.log(' Starting chat navigation...');
     
     // Wait for any toaster notifications to disappear
     try {
       await this.page.waitForTimeout(2000);
       const toaster = this.page.locator('#_rht_toaster, .toaster, [class*="toast"]');
       if (await toaster.isVisible({ timeout: 1000 })) {
-        console.log('⚠️ Toaster notification detected, waiting for it to disappear...');
+        console.log(' Toaster notification detected, waiting for it to disappear...');
         await toaster.waitFor({ state: 'hidden', timeout: 5000 });
       }
     } catch (e) {
@@ -44,7 +44,7 @@ class AisuggestedPage {
       await this.chatNavLink.click({ timeout: 5000 });
       console.log('✓ Chat nav link clicked successfully');
     } catch (error) {
-      console.log('⚠️ Chat nav link click failed:', error.message);
+      console.log(' Chat nav link click failed:', error.message);
       console.log('Trying fallback navigation...');
       
       // Fallback: Direct navigation to chat page
@@ -76,7 +76,7 @@ class AisuggestedPage {
       await this.page.waitForURL('**/adv-ai/new**', { timeout: 10000 });
       console.log('✓ Navigated to AI chat interface');
     } catch (error) {
-      console.log('⚠️ Talk to Pastor AI link not found or not clickable:', error.message);
+      console.log(' Talk to Pastor AI link not found or not clickable:', error.message);
       
       // Try direct navigation to AI chat page
       try {
@@ -86,7 +86,7 @@ class AisuggestedPage {
         });
         console.log('✓ Direct navigation to AI chat interface successful');
       } catch (navError) {
-        console.log('⚠️ Direct navigation also failed:', navError.message);
+        console.log(' Direct navigation also failed:', navError.message);
       }
     }
   }
@@ -99,7 +99,7 @@ class AisuggestedPage {
       await this.chatInput.waitFor({ state: 'visible', timeout: 15000 });
       console.log('✓ Chat input found and visible');
     } catch (error) {
-      console.log('⚠️ Chat input not found, trying alternative selectors...');
+      console.log(' Chat input not found, trying alternative selectors...');
       
       // Try alternative selectors for the chat input
       const alternativeSelectors = [
@@ -263,7 +263,7 @@ class AisuggestedPage {
             console.log('No confirmation dialog found');
           }
           
-          console.log('✅ Successfully deleted the first recent chat');
+          console.log(' Successfully deleted the first recent chat');
           return;
         }
       } catch (e) {
@@ -310,7 +310,7 @@ class AisuggestedPage {
             console.log('No confirmation dialog found');
           }
           
-          console.log('✅ Successfully deleted the first recent chat');
+          console.log(' Successfully deleted the first recent chat');
           return;
         }
       } catch (e) {
@@ -368,7 +368,7 @@ class AisuggestedPage {
                 
                 // Wait and verify deletion worked
                 await this.page.waitForTimeout(2000);
-                console.log('✅ Successfully deleted recent chat');
+                console.log(' Successfully deleted recent chat');
                 return;
               }
             }

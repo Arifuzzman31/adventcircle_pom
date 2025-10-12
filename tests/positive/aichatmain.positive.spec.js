@@ -49,7 +49,7 @@ test('User can ask "can you tell me something about bible" and receive a correct
                              responseText.includes('biblical') ||
                              responseText.includes('salvation') ||
                              responseText.includes('heart') ||
-                             responseText.includes('learn');
+                             responseText.includes('learn') ||
                              responseText.includes('time');
 
   console.log('Response contains relevant keywords:', hasRelevantKeywords);

@@ -45,7 +45,7 @@ exports.EventPage = class EventPage {
       try {
         await this.page.waitForLoadState('networkidle', { timeout: 10000 });
       } catch (error) {
-        console.log('⚠️ NetworkIdle wait failed, trying domcontentloaded...');
+        console.log(' NetworkIdle wait failed, trying domcontentloaded...');
         await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
       }
       
@@ -54,11 +54,11 @@ exports.EventPage = class EventPage {
         timeout: 5000,
         state: 'visible' 
       }).catch(() => {
-        console.log('⚠️ Events page selector not found, continuing...');
+        console.log(' Events page selector not found, continuing...');
       });
       
     } catch (error) {
-      console.log('⚠️ Navigation error:', error.message);
+      console.log(' Navigation error:', error.message);
       // Try direct navigation as fallback
       await this.page.goto('https://adventcircle.com/events');
       await this.page.waitForLoadState('domcontentloaded');
@@ -73,7 +73,7 @@ exports.EventPage = class EventPage {
       try {
         await this.page.waitForLoadState('networkidle', { timeout: 10000 });
       } catch (error) {
-        console.log('⚠️ NetworkIdle wait failed, trying domcontentloaded...');
+        console.log(' NetworkIdle wait failed, trying domcontentloaded...');
         await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
       }
       
@@ -82,11 +82,11 @@ exports.EventPage = class EventPage {
         timeout: 5000,
         state: 'visible'
       }).catch(() => {
-        console.log('⚠️ Create event form not fully loaded, continuing...');
+        console.log(' Create event form not fully loaded, continuing...');
       });
       
     } catch (error) {
-      console.log('⚠️ Create event error:', error.message);
+      console.log(' Create event error:', error.message);
       throw error;
     }
   }
@@ -210,7 +210,7 @@ exports.EventPage = class EventPage {
     const currentUrl = this.page.url();
     
     if (currentUrl.includes('/events') && !currentUrl.includes('/create')) {
-      console.log('✅ Event created successfully - redirected to events page');
+      console.log(' Event created successfully - redirected to events page');
       return true;
     }
     
@@ -226,7 +226,7 @@ exports.EventPage = class EventPage {
       try {
         const element = this.page.locator(selector).first();
         if (await element.isVisible({ timeout: 2000 })) {
-          console.log('✅ Success message found');
+          console.log(' Success message found');
           return true;
         }
       } catch (e) {
@@ -234,7 +234,7 @@ exports.EventPage = class EventPage {
       }
     }
     
-    console.log('❌ No success indication found');
+    console.log(' No success indication found');
     return false;
   }
 };

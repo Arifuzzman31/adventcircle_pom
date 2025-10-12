@@ -9,7 +9,7 @@ test('User can add product to wishlist and verify it appears in wishlist', async
   // Step 1: Login
   await login.goto();
   await login.login('ratulsikder104@gmail.com', 'Ratul@104!');
-  console.log('✅ Login completed');
+  console.log(' Login completed');
 
   // Step 2: Click Marketplace
   await productWishlist.goToMarketplace();
@@ -20,7 +20,7 @@ test('User can add product to wishlist and verify it appears in wishlist', async
 
   // Step 4: Click on the wishlist icon (click on any available one)
   await productWishlist.addProductToWishlist();
-  console.log('✅ Clicked on wishlist icon');
+  console.log(' Clicked on wishlist icon');
 
   // Step 5: Go to wishlist by click
   await productWishlist.goToWishlist();
@@ -30,7 +30,7 @@ test('User can add product to wishlist and verify it appears in wishlist', async
   
   // Step 7: If added successful, if not test fail
   if (productInWishlist) {
-    console.log('✅ SUCCESS: Product found in wishlist - Test Passed');
+    console.log(' SUCCESS: Product found in wishlist - Test Passed');
   } else {
     console.log('❌ FAILED: Product was not found in wishlist');
     throw new Error('❌ Product was not found in wishlist — Test Failed');

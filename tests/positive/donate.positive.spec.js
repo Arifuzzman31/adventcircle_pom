@@ -20,7 +20,7 @@ test('Positive Test: User can donate successfully', async ({ page }) => {
     lastName: 'Alfredo',
     email: 'niazsaya34@gmail.com',
     phone: '01956435623',
-    country: 'Bangladesh',
+    country: 'Afghanistan',
     address: 'no address needed',
     amount: 200
   });

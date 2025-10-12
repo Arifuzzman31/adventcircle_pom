@@ -47,9 +47,9 @@ exports.DonationPage = class DonationPage {
     // Try to verify donation was created (optional)
     try {
       await expect(this.page.getByText(title).first()).toBeVisible({ timeout: 10000 });
-      console.log('✅ Donation creation successful - found donation in list!');
+      console.log(' Donation creation successful - found donation in list!');
     } catch {
-      console.log('⚠️ Could not find donation in list, but creation likely succeeded');
+      console.log(' Could not find donation in list, but creation likely succeeded');
     }
   }
 

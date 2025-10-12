@@ -6,7 +6,7 @@ test('User can add product to cart and increase quantity', async ({ page }) => {
   const login = new LoginPage(page);
   const addToCart = new AddToCartPage(page);
 
-  // Step 1: Login (login is complete, just call it)
+  // Step 1: Login 
   await login.goto();
   await login.login('ratulsikder104@gmail.com', 'Ratul@104!');
   console.log(' Login completed');
@@ -36,5 +36,5 @@ test('User can add product to cart and increase quantity', async ({ page }) => {
   }
 
   
-  console.log('🎉 Test completed successfully');
+  console.log(' Test completed successfully');
 });

@@ -24,13 +24,13 @@ class ShowAllEvent {
       try {
         await this.seeAllLink.waitFor({ state: 'visible', timeout: 10000 });
         await this.seeAllLink.click();
-        console.log('✅ Clicked "See All" events link');
+        console.log(' Clicked "See All" events link');
       } catch (error) {
-        console.log('⚠️ Failed to click "See All" link, trying alternative...');
+        console.log(' Failed to click "See All" link, trying alternative...');
         // Try alternative selector
         const altLink = this.page.locator('a:has-text("See All")').first();
         await altLink.click();
-        console.log('✅ Clicked "See All" with alternative selector');
+        console.log(' Clicked "See All" with alternative selector');
       }
     }
   
@@ -53,14 +53,14 @@ class ShowAllEvent {
           const element = this.page.locator(selector).first();
           await element.waitFor({ state: 'visible', timeout: 5000 });
           await element.click();
-          console.log(`✅ Clicked on any available event using: ${selector}`);
+          console.log(` Clicked on any available event using: ${selector}`);
           return;
         } catch (error) {
-          console.log(`⚠️ Selector ${selector} not found, trying next...`);
+          console.log(` Selector ${selector} not found, trying next...`);
         }
       }
       
-      console.log('⚠️ No clickable event found');
+      console.log(' No clickable event found');
     }
   
     async verifyEventDetails() {
@@ -85,7 +85,7 @@ class ShowAllEvent {
           const element = this.page.locator(selector).first();
           if (await element.isVisible()) {
             foundIndicators++;
-            console.log(`✅ Found event indicator: ${selector}`);
+            console.log(` Found event indicator: ${selector}`);
           }
         } catch (error) {
           // Continue checking other indicators
@@ -93,9 +93,9 @@ class ShowAllEvent {
       }
       
       if (foundIndicators > 0) {
-        console.log(`✅ Event details page verified (${foundIndicators} indicators found)`);
+        console.log(` Event details page verified (${foundIndicators} indicators found)`);
       } else {
-        console.log('⚠️ Could not verify event details page, but continuing...');
+        console.log(' Could not verify event details page, but continuing...');
       }
     }
   
@@ -113,16 +113,16 @@ class ShowAllEvent {
           try {
             await button.waitFor({ state: 'visible', timeout: 5000 });
             await button.click();
-            console.log('✅ Clicked interested button');
+            console.log(' Clicked interested button');
             return;
           } catch (error) {
             // Continue to next button
           }
         }
         
-        console.log('⚠️ No interested button found');
+        console.log(' No interested button found');
       } catch (error) {
-        console.log('⚠️ Could not mark as interested:', error.message);
+        console.log(' Could not mark as interested:', error.message);
       }
     }
   }

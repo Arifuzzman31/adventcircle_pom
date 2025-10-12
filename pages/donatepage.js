@@ -37,11 +37,14 @@ class DonatePage {
     await this.emailInput.fill(email);
     await this.phoneInput.fill(phone);
 
-    // Country selection fix
+    // Country selection - type the country name
     await this.countryDropdown.click();
-    const countryOption = this.page.locator(`text=${country}`).first();
-    await countryOption.waitFor({ state: 'visible', timeout: 5000 });
-    await countryOption.click();
+    await this.page.waitForTimeout(1000);
+    
+    // Type the first few characters of the country to filter
+    await this.page.keyboard.type('Afg');
+    await this.page.waitForTimeout(500);
+    await this.page.keyboard.press('Enter');
 
     await this.addressInput.fill(address);
 

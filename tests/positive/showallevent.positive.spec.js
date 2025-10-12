@@ -9,7 +9,7 @@ test('User can view any available event details and mark interested', async ({ p
   // Step 1: Login
   await loginPage.goto();
   await loginPage.login('ratulsikder104@gmail.com', 'Ratul@104!');
-  console.log('✅ Login completed');
+  console.log(' Login completed');
 
   // Step 2: Navigate to See All events
   await showAllEvent.goToSeeAll();

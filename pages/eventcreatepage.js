@@ -59,7 +59,7 @@ exports.EventPage = class EventPage {
     await this.eventTypeOption.click();
 
     // Skip date fields for now - they seem to be causing validation issues
-    console.log('⚠️ Skipping date fields due to validation issues');
+    console.log(' Skipping date fields due to validation issues');
     console.log('This test will verify other form functionality without dates');
 
     // Description, email, and location
@@ -225,7 +225,7 @@ exports.EventPage = class EventPage {
     // Check URL redirection - primary verification method
     const currentUrl = this.page.url();
     if (currentUrl.includes('/events') || currentUrl.includes('/event')) {
-      console.log('✅ Event creation verified - redirected to events page');
+      console.log(' Event creation verified - redirected to events page');
       console.log('Current URL:', currentUrl);
       return; // Success!
     }
@@ -241,7 +241,7 @@ exports.EventPage = class EventPage {
       try {
         await expect(message).toBeVisible({ timeout: 1000 });
         const text = await message.textContent();
-        console.log('✅ Success message found:', text);
+        console.log(' Success message found:', text);
         return; // Success!
       } catch (error) {
         // Continue to next message
