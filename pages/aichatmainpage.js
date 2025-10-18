@@ -2,20 +2,24 @@ class AichatMainPage {
     constructor(page) {
       this.page = page;
       // Multiple selectors for chat navigation
-      this.chatNavLink = page.getByRole('link').filter({ hasText: /^$/ }).nth(1);
-      this.chatNavLinkAlt = page.getByRole('link', { name: 'Chat' });
-      this.chatNavLinkAlt2 = page.locator('a[href*="chat"]');
+      this.chatNavLink = page.getByRole('link', { name: 'Chat' });
+      this.chatNavLinkAlt = page.locator('a[href*="chat"]');
+      this.chatNavLinkAlt2 = page.getByText('Chat');
       
       this.talkToPastorLink = page.getByRole('link', { name: 'Talk To Pastor Ai' });
+      this.talkToPastorLinkAlt = page.locator('a[href*="adv-ai"]');
+      this.talkToPastorLinkAlt2 = page.getByText('Talk To Pastor');
       this.chatInput = page.getByPlaceholder("Ask Anything... I'm here to help");
-      this.sendBtn = page.locator('button[type="submit"], .send-button, button:has(svg)');
+      this.chatInputAlt = page.locator('textarea, input[type="text"]').first();
+      this.sendBtn = page.getByRole('button').filter({ hasText: /send|submit/i });
+      this.sendBtnAlt = page.locator('button[type="submit"], .send-button, button:has(svg)');
       this.responseArea = page.locator('.chat-response, .ai-response, .bot-message, .message-content');
  
       this.suggestedQuestion = page.locator('.suggested-question'); // Update with real selector if needed
     }
   
     async openChat() {
-      console.log('🔄 Starting chat navigation...');
+      console.log(' Starting chat navigation...');
       
       // Handle potential toaster notifications
       try {
@@ -30,17 +34,35 @@ class AichatMainPage {
       }
       
       // Try multiple approaches to navigate to chat
+      let navigatedToChat = false;
+      
+      // Method 1: Try primary chat link
       try {
         console.log('Trying primary chat nav link...');
         await this.chatNavLink.click({ timeout: 5000 });
-        console.log('✓ Chat nav link clicked successfully');
+        console.log(' Chat nav link clicked successfully');
+        navigatedToChat = true;
       } catch (error) {
-        console.log(' Chat nav link click failed:', error.message);
-        console.log('Trying fallback navigation...');
-        
-        // Fallback: Direct navigation to chat page
+        console.log(' Primary chat nav failed:', error.message);
+      }
+      
+      // Method 2: Try alternative chat link
+      if (!navigatedToChat) {
+        try {
+          console.log('Trying alternative chat nav link...');
+          await this.chatNavLinkAlt.click({ timeout: 3000 });
+          console.log(' Alternative chat nav link clicked');
+          navigatedToChat = true;
+        } catch (error) {
+          console.log(' Alternative chat nav failed:', error.message);
+        }
+      }
+      
+      // Method 3: Direct navigation fallback
+      if (!navigatedToChat) {
+        console.log('Using fallback: Direct navigation to chat page...');
         await this.page.goto('https://adventcircle.com/chat');
-        console.log('✓ Direct navigation to chat page');
+        console.log(' Direct navigation to chat page');
       }
       
       // Wait for page to load
@@ -52,93 +74,94 @@ class AichatMainPage {
     }
     
     async clickTalkToPastorAI() {
-      console.log('🔄 Looking for Talk to Pastor AI link...');
+      console.log(' Looking for Talk to Pastor AI link...');
       
+      let aiChatReached = false;
+      
+      // Method 1: Try primary Talk to Pastor link
       try {
-        await this.talkToPastorLink.waitFor({ state: 'visible', timeout: 10000 });
+        await this.talkToPastorLink.waitFor({ state: 'visible', timeout: 8000 });
         await this.talkToPastorLink.click();
-        
-        // Wait for AI chat interface to load
-        await this.page.waitForURL('**/adv-ai/new**', { timeout: 10000 });
-        console.log('✓ Navigated to AI chat interface');
+        await this.page.waitForURL('**/adv-ai/new**', { timeout: 8000 });
+        console.log(' Navigated to AI chat interface via primary link');
+        aiChatReached = true;
       } catch (error) {
-        console.log(' Talk to Pastor AI link not found or not clickable:', error.message);
-        
-        // Try direct navigation to AI chat page
+        console.log(' Primary Talk to Pastor link failed:', error.message);
+      }
+      
+      // Method 2: Try alternative Talk to Pastor link
+      if (!aiChatReached) {
+        try {
+          await this.talkToPastorLinkAlt.click({ timeout: 3000 });
+          await this.page.waitForURL('**/adv-ai/new**', { timeout: 5000 });
+          console.log(' Navigated to AI chat interface via alternative link');
+          aiChatReached = true;
+        } catch (error) {
+          console.log(' Alternative Talk to Pastor link failed:', error.message);
+        }
+      }
+      
+      // Method 3: Direct navigation fallback
+      if (!aiChatReached) {
+        console.log('Using fallback: Direct navigation to AI chat interface...');
         try {
           await this.page.goto('https://adventcircle.com/adv-ai/new', {
             waitUntil: 'domcontentloaded',
             timeout: 15000
           });
-          console.log('✓ Direct navigation to AI chat interface successful');
+          console.log(' Direct navigation to AI chat interface successful');
         } catch (navError) {
-          console.log(' Direct navigation also failed:', navError.message);
+          console.log(' All navigation methods failed:', navError.message);
+          throw new Error('Unable to reach AI chat interface');
         }
       }
     }
   
     async waitForChatPageToLoad() {
-      console.log('🔄 Waiting for chat page to load...');
+      console.log(' Waiting for chat page to load...');
       
+      let chatInputFound = false;
+      
+      // Try primary chat input
       try {
-        await this.chatInput.waitFor({ state: 'visible', timeout: 15000 });
-        console.log('✓ Chat input found and visible');
+        await this.chatInput.waitFor({ state: 'visible', timeout: 10000 });
+        console.log(' Primary chat input found and visible');
+        chatInputFound = true;
       } catch (error) {
-        console.log(' Chat input not found, trying alternative selectors...');
-        
-        // Try alternative selectors for the chat input
-        const alternativeSelectors = [
-          'input[placeholder*="Ask Anything"]',
-          'input[placeholder*="I\'m here to help"]',
+        console.log(' Primary chat input not found, trying alternatives...');
+      }
+      
+      // Try alternative chat input
+      if (!chatInputFound) {
+        try {
+          await this.chatInputAlt.waitFor({ state: 'visible', timeout: 5000 });
+          this.chatInput = this.chatInputAlt;
+          console.log(' Alternative chat input found');
+          chatInputFound = true;
+        } catch (error) {
+          console.log(' Alternative chat input also not found');
+        }
+      }
+      
+      // Final fallback with multiple selectors
+      if (!chatInputFound) {
+        console.log('Trying final fallback selectors...');
+        const fallbackSelectors = [
+          'input[placeholder*="Ask"]',
           'textarea[placeholder*="Ask"]',
-          'input[type="text"]',
+          'input[type="text"]:visible',
+          'textarea:visible',
           '.chat-input',
           '[data-testid="chat-input"]'
         ];
         
-        for (const selector of alternativeSelectors) {
+        for (const selector of fallbackSelectors) {
           try {
             const element = this.page.locator(selector).first();
-            await element.waitFor({ state: 'visible', timeout: 3000 });
-            console.log(`✓ Found chat input with selector: ${selector}`);
-            // Update the chatInput reference
+            await element.waitFor({ state: 'visible', timeout: 2000 });
+            console.log(` Found chat input with fallback selector: ${selector}`);
             this.chatInput = element;
-            return;
-          } catch (e) {
-            continue;
-          }
-        }
-        
-        console.log('⚠️ No chat input found, but continuing...');
-      }
-    }
-  
-    async askQuestion(question) {
-      console.log(`🔄 Asking question: "${question}"`);
-      
-      // Fill the question
-      await this.chatInput.fill(question);
-      await this.page.waitForTimeout(500);
-      
-      // Try to click send button with fallbacks
-      try {
-        await this.sendBtn.click();
-        console.log('✓ Send button clicked');
-      } catch (error) {
-        console.log('⚠️ Send button not found, trying alternatives...');
-        
-        // Try alternative send methods
-        const sendAlternatives = [
-          () => this.page.getByRole('button', { name: 'Send' }).click(),
-          () => this.page.locator('button[type="submit"]').click(),
-          () => this.page.locator('.send-button').click(),
-          () => this.page.keyboard.press('Enter')
-        ];
-        
-        for (const sendMethod of sendAlternatives) {
-          try {
-            await sendMethod();
-            console.log('✓ Question sent using alternative method');
+            chatInputFound = true;
             break;
           } catch (e) {
             continue;
@@ -146,9 +169,81 @@ class AichatMainPage {
         }
       }
       
+      if (!chatInputFound) {
+        console.log(' No chat input found with any method');
+        throw new Error('Chat input not found - interface may not be loaded');
+      }
+    }
+  
+    async askQuestion(question) {
+      console.log(` Asking question: "${question}"`);
+      
+      // Fill the question
+      await this.chatInput.fill(question);
+      await this.page.waitForTimeout(500);
+      
+      // Try to send the question with multiple methods
+      let questionSent = false;
+      
+      // Method 1: Try primary send button
+      try {
+        await this.sendBtn.click({ timeout: 3000 });
+        console.log(' Primary send button clicked');
+        questionSent = true;
+      } catch (error) {
+        console.log(' Primary send button failed:', error.message);
+      }
+      
+      // Method 2: Try alternative send button
+      if (!questionSent) {
+        try {
+          await this.sendBtnAlt.click({ timeout: 3000 });
+          console.log(' Alternative send button clicked');
+          questionSent = true;
+        } catch (error) {
+          console.log(' Alternative send button failed:', error.message);
+        }
+      }
+      
+      // Method 3: Try Enter key
+      if (!questionSent) {
+        try {
+          await this.chatInput.press('Enter');
+          console.log(' Question sent using Enter key');
+          questionSent = true;
+        } catch (error) {
+          console.log(' Enter key method failed:', error.message);
+        }
+      }
+      
+      // Method 4: Try other button approaches
+      if (!questionSent) {
+        const sendMethods = [
+          () => this.page.getByRole('button', { name: 'Send' }).click(),
+          () => this.page.getByRole('button').filter({ hasText: 'Send' }).click(),
+          () => this.page.locator('button[type="submit"]').first().click(),
+          () => this.page.locator('button').filter({ hasText: /send|submit/i }).first().click()
+        ];
+        
+        for (let i = 0; i < sendMethods.length; i++) {
+          try {
+            await sendMethods[i]();
+            console.log(` Question sent using method ${i + 4}`);
+            questionSent = true;
+            break;
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+      
+      if (!questionSent) {
+        console.log(' All send methods failed, but question was typed');
+      }
+      
       // Wait for the question to be processed
-      await this.page.waitForTimeout(3000); 
-      console.log('✓ Question sent and processing...');
+      await this.page.waitForTimeout(2000); 
+      console.log(' Question processing started...');
     }
   
     async clickSuggestedQuestion(index = 0) {
@@ -156,7 +251,7 @@ class AichatMainPage {
     }
   
     async getResponseText() {
-      console.log('🔄 Waiting for AI response...');
+      console.log(' Waiting for AI response...');
       
       // Wait longer for AI to process and respond
       await this.page.waitForTimeout(5000);

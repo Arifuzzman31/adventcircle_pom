@@ -27,19 +27,49 @@ exports.AddToCartPage = class AddToCartPage {
     }
   
     async addProductToCart() {
-      // Wait for the button to be visible and clickable
-      await this.addToCartBtn.waitFor({ state: 'visible', timeout: 10000 });
+      console.log(' Looking for Add to cart button...');
       
-      // Try clicking the add to cart button
-      try {
-        await this.addToCartBtn.click();
-        console.log('Clicked Add to cart button successfully');
-      } catch (error) {
-        console.log('First click failed, trying alternative selector...');
-        // Try alternative selector if first one fails
-        const altButton = this.page.locator('button').filter({ hasText: 'Add to cart' }).first();
-        await altButton.click();
-        console.log('Clicked Add to cart button with alternative selector');
+      // Wait for page to load first
+      await this.page.waitForLoadState('domcontentloaded');
+      await this.page.waitForTimeout(3000);
+      
+      // Try multiple selectors for the add to cart button
+      const possibleSelectors = [
+        'button:has-text("Add to cart")',
+        'button[class*="add-to-cart"]',
+        'button[aria-label*="Add to cart"]',
+        'button >> text="Add to cart"',
+        '[data-testid*="add-to-cart"]',
+        'button:has-text("Add")',
+        '.product-card button:has-text("Add")',
+        '.ant-btn:has-text("Add to cart")'
+      ];
+      
+      let buttonFound = false;
+      
+      for (const selector of possibleSelectors) {
+        try {
+          const button = this.page.locator(selector).first();
+          const isVisible = await button.isVisible({ timeout: 2000 });
+          
+          if (isVisible) {
+            console.log(` Found Add to cart button with selector: ${selector}`);
+            await button.click();
+            console.log(' Clicked Add to cart button successfully');
+            buttonFound = true;
+            break;
+          }
+        } catch (error) {
+          console.log(` Selector failed: ${selector}`);
+          continue;
+        }
+      }
+      
+      if (!buttonFound) {
+        console.log(' No Add to cart button found with any selector');
+        // Take screenshot for debugging
+        await this.page.screenshot({ path: 'no-add-to-cart-button.png', fullPage: true });
+        throw new Error('Add to cart button not found - this should fail the test');
       }
     }
 

@@ -29,5 +29,5 @@ test('User can view any available event details and mark interested', async ({ p
   // Step 5: Mark as interested
   await showAllEvent.markInterested();
   
-  console.log('🎉 Test completed successfully');
+  console.log(' Test completed successfully');
 });

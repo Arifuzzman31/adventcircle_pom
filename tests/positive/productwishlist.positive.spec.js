@@ -32,8 +32,8 @@ test('User can add product to wishlist and verify it appears in wishlist', async
   if (productInWishlist) {
     console.log(' SUCCESS: Product found in wishlist - Test Passed');
   } else {
-    console.log('❌ FAILED: Product was not found in wishlist');
-    throw new Error('❌ Product was not found in wishlist — Test Failed');
+    console.log(' FAILED: Product was not found in wishlist');
+    throw new Error(' Product was not found in wishlist — Test Failed');
   }
   
   console.log(' Test completed successfully');

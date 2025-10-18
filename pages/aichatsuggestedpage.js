@@ -70,11 +70,11 @@ class AisuggestedPage {
     try {
       await this.talkToPastorLink.waitFor({ state: 'visible', timeout: 10000 });
       await this.talkToPastorLink.click();
-      console.log('✓ Talk to Pastor AI link clicked');
+      console.log(' Talk to Pastor AI link clicked');
       
       // Wait for navigation to the AI chat page
       await this.page.waitForURL('**/adv-ai/new**', { timeout: 10000 });
-      console.log('✓ Navigated to AI chat interface');
+      console.log(' Navigated to AI chat interface');
     } catch (error) {
       console.log(' Talk to Pastor AI link not found or not clickable:', error.message);
       
@@ -84,7 +84,7 @@ class AisuggestedPage {
           waitUntil: 'domcontentloaded',
           timeout: 10000 
         });
-        console.log('✓ Direct navigation to AI chat interface successful');
+        console.log(' Direct navigation to AI chat interface successful');
       } catch (navError) {
         console.log(' Direct navigation also failed:', navError.message);
       }
@@ -97,7 +97,7 @@ class AisuggestedPage {
     // Wait for the chat input to be visible
     try {
       await this.chatInput.waitFor({ state: 'visible', timeout: 15000 });
-      console.log('✓ Chat input found and visible');
+      console.log(' Chat input found and visible');
     } catch (error) {
       console.log(' Chat input not found, trying alternative selectors...');
       
@@ -115,7 +115,7 @@ class AisuggestedPage {
         try {
           const element = this.page.locator(selector);
           await element.waitFor({ state: 'visible', timeout: 3000 });
-          console.log(`✓ Found chat input with selector: ${selector}`);
+          console.log(` Found chat input with selector: ${selector}`);
           // Update the chatInput locator to use the working selector
           this.chatInput = element;
           return;
@@ -244,7 +244,7 @@ class AisuggestedPage {
       hoveredElement = chatItemContainer;
       trashIconParent = chatItemContainer;
       
-      console.log('✓ Hovered over the FIRST "Who is Jesus Christ?" chat item container');
+      console.log(' Hovered over the FIRST "Who is Jesus Christ?" chat item container');
       await this.page.waitForTimeout(2000); // Wait for delete button to appear
       
       // Try a simple approach first - look for any button or clickable element that appears after hover
@@ -252,13 +252,13 @@ class AisuggestedPage {
         const deleteButton = chatItemContainer.locator('button, [role="button"], .cursor-pointer').filter({ hasText: /delete|trash|remove/i }).first();
         if (await deleteButton.isVisible({ timeout: 1000 })) {
           await deleteButton.click();
-          console.log('✓ Clicked delete button using text-based selector');
+          console.log(' Clicked delete button using text-based selector');
           
           await this.page.waitForTimeout(500);
           try {
             const confirmBtn = this.page.locator('button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Delete"), button:has-text("OK")').first();
             await confirmBtn.click({ timeout: 2000 });
-            console.log('✓ Confirmed deletion');
+            console.log(' Confirmed deletion');
           } catch (e) {
             console.log('No confirmation dialog found');
           }
@@ -298,14 +298,14 @@ class AisuggestedPage {
         const isVisible = await trashInParent.isVisible({ timeout: 2000 });
         if (isVisible) {
           await trashInParent.click({ force: true });
-          console.log('✓ Clicked trash icon within the hovered chat item');
+          console.log(' Clicked trash icon within the hovered chat item');
           
           // Check for confirmation dialog
           await this.page.waitForTimeout(500);
           try {
             const confirmBtn = this.page.locator('button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Delete"), button:has-text("OK")').first();
             await confirmBtn.click({ timeout: 2000 });
-            console.log('✓ Confirmed deletion');
+            console.log(' Confirmed deletion');
           } catch (e) {
             console.log('No confirmation dialog found');
           }
@@ -351,7 +351,7 @@ class AisuggestedPage {
               if (boundingBox && boundingBox.width > 0 && boundingBox.height > 0) {
                 console.log(`Attempting to click trash icon ${i} (visible, enabled, has bounding box)`);
                 await icon.click({ force: true, timeout: 3000 });
-                console.log(`✓ Clicked delete button (icon ${i}) using selector: ${selector}`);
+                console.log(` Clicked delete button (icon ${i}) using selector: ${selector}`);
                 
                 // Wait a bit and check for confirmation dialog
                 await this.page.waitForTimeout(1000);
@@ -360,7 +360,7 @@ class AisuggestedPage {
                   const confirmVisible = await confirmBtn.isVisible({ timeout: 2000 });
                   if (confirmVisible) {
                     await confirmBtn.click({ timeout: 2000 });
-                    console.log('✓ Confirmed deletion');
+                    console.log(' Confirmed deletion');
                   }
                 } catch (e) {
                   console.log('No confirmation dialog found or needed');

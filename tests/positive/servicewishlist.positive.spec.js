@@ -38,7 +38,7 @@ test('Add service to wishlist and verify it appears in Wishlist > Services', asy
   if (isAdded) {
     console.log(' SUCCESS: Service found in wishlist - Test Passed');
   } else {
-    console.log('❌ FAILED: Service was not found in wishlist');
-    throw new Error('❌ Service was not found in wishlist — Test Failed');
+    console.log(' FAILED: Service was not found in wishlist');
+    throw new Error(' Service was not found in wishlist — Test Failed');
   }
 });
