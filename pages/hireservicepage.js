@@ -125,7 +125,7 @@ class HireServicePage {
     async fillSecondContactForm(phoneNumber = '+8801923895432', briefOverview = 'for testing purposse') {
         console.log(' Filling second contact form - NOT USED IN NEW WORKFLOW');
         // This method is kept for backwards compatibility but not used in the simplified workflow
-        console.log('ℹ This method is deprecated - new workflow only uses one service booking');
+        console.log(' This method is deprecated - new workflow only uses one service booking');
     }
 
     async verifyStripeWindow() {

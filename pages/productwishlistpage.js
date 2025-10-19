@@ -94,7 +94,7 @@ exports.ProductWishlistPage = class ProductWishlistPage {
                 return true;
             }
             
-            console.log('❌ No products found in wishlist');
+            console.log(' No products found in wishlist');
             return false;
         }
     }
