@@ -96,21 +96,21 @@ exports.EventPage = class EventPage {
     console.log('Filling basic event form...');
     
     await this.eventTitle.fill('Test Event for Automation');
-    console.log('✓ Event title filled');
+    console.log(' Event title filled');
     
     await this.eventTypeDropdown.click();
     await this.eventTypeOption.click();
-    console.log('✓ Event type selected');
+    console.log(' Event type selected');
     
     await this.description.fill('This is a test event created by automation testing');
-    console.log('✓ Description filled');
+    console.log(' Description filled');
     
     await this.email.fill('test@example.com');
-    console.log('✓ Email filled');
+    console.log(' Email filled');
     
     await this.locationSearch.fill('dha');
     await this.locationOption.click();
-    console.log('✓ Location selected');
+    console.log(' Location selected');
   }
 
   async uploadImage() {
@@ -127,14 +127,14 @@ exports.EventPage = class EventPage {
       const count = await imagePreview.count();
       
       if (count > 0) {
-        console.log('✓ Image uploaded successfully');
+        console.log(' Image uploaded successfully');
         return true;
       } else {
-        console.log('⚠ Image upload may have failed');
+        console.log(' Image upload may have failed');
         return false;
       }
     } catch (error) {
-      console.log('⚠ Image upload error:', error.message);
+      console.log(' Image upload error:', error.message);
       return false;
     }
   }
@@ -157,10 +157,10 @@ exports.EventPage = class EventPage {
       await this.page.keyboard.press('Tab');
       await this.page.waitForTimeout(500);
       
-      console.log('✓ Dates filled successfully');
+      console.log(' Dates filled successfully');
       return true;
     } catch (error) {
-      console.log('⚠ Date filling failed:', error.message);
+      console.log(' Date filling failed:', error.message);
       return false;
     }
   }

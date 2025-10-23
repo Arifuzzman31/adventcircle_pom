@@ -1,0 +1,103 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - alert [ref=e2]: AdventCircle
+  - generic [ref=e4]:
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - link "AdventCircle Logo" [ref=e7] [cursor=pointer]:
+          - /url: /feeds
+          - img "AdventCircle Logo" [ref=e8] [cursor=pointer]
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - img [ref=e13] [cursor=pointer]
+            - link [ref=e17] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e19] [cursor=pointer]
+            - img [ref=e23] [cursor=pointer]
+          - generic [ref=e26]:
+            - img "User Avatar" [ref=e28]
+            - img [ref=e30]
+    - generic [ref=e31]:
+      - complementary [ref=e32]:
+        - menu [ref=e34]:
+          - menuitem "Feed" [ref=e35] [cursor=pointer]:
+            - img [ref=e37] [cursor=pointer]
+            - link "Feed" [ref=e48] [cursor=pointer]:
+              - /url: /feeds
+          - menuitem "Events" [ref=e49] [cursor=pointer]:
+            - img [ref=e51] [cursor=pointer]
+            - link "Events" [ref=e58] [cursor=pointer]:
+              - /url: /events
+          - menuitem "Lives" [ref=e59] [cursor=pointer]:
+            - img [ref=e61] [cursor=pointer]
+            - link "Lives" [ref=e70] [cursor=pointer]:
+              - /url: /lives
+          - menuitem "Donation Icon Donations" [ref=e71] [cursor=pointer]:
+            - img "Donation Icon" [ref=e73] [cursor=pointer]
+            - link "Donations" [ref=e77] [cursor=pointer]:
+              - /url: /donation
+          - menuitem "Church Icon My Churches" [ref=e78] [cursor=pointer]:
+            - img "Church Icon" [ref=e80] [cursor=pointer]
+            - link "My Churches" [ref=e84] [cursor=pointer]:
+              - /url: /church-list
+          - menuitem "Marketplace Icon Marketplace" [ref=e85] [cursor=pointer]:
+            - img "Marketplace Icon" [ref=e87] [cursor=pointer]
+            - generic [ref=e92] [cursor=pointer]: Marketplace
+          - menuitem "Wishlist" [ref=e93] [cursor=pointer]:
+            - img [ref=e95] [cursor=pointer]
+            - link "Wishlist" [ref=e99] [cursor=pointer]:
+              - /url: /wishlist
+          - menuitem "Spiritual Resources Icon Spiritual Resources" [ref=e100] [cursor=pointer]:
+            - img "Spiritual Resources Icon" [ref=e102] [cursor=pointer]
+            - link "Spiritual Resources" [ref=e108] [cursor=pointer]:
+              - /url: /spiritual-resources
+          - menuitem "News Icon Blog & News" [ref=e109] [cursor=pointer]:
+            - img "News Icon" [ref=e111] [cursor=pointer]
+            - link "Blog & News" [ref=e114] [cursor=pointer]:
+              - /url: /blogs
+          - menuitem "Settings" [ref=e115] [cursor=pointer]:
+            - img [ref=e117] [cursor=pointer]
+            - link "Settings" [ref=e121] [cursor=pointer]:
+              - /url: /profile/edit
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - link "About" [ref=e125] [cursor=pointer]:
+              - /url: /about
+            - link "Contact" [ref=e126] [cursor=pointer]:
+              - /url: /contact
+            - link "Privacy & Policy" [ref=e127] [cursor=pointer]:
+              - /url: /privacy-policy
+          - generic [ref=e128]: ©2025 AdventCircle
+      - main [ref=e129]:
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - navigation [ref=e132]:
+              - list [ref=e133]:
+                - listitem [ref=e134]:
+                  - link "home" [ref=e135] [cursor=pointer]:
+                    - /url: /
+                    - img "home" [ref=e136] [cursor=pointer]:
+                      - img [ref=e137] [cursor=pointer]
+                - listitem [ref=e139]: ">"
+                - listitem [ref=e140]:
+                  - link "Wishlist" [ref=e141] [cursor=pointer]:
+                    - /url: /wishlist
+            - radiogroup "segmented control" [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144] [cursor=pointer]:
+                  - radio "Products"
+                  - generic [ref=e146] [cursor=pointer]: Products
+                - generic [ref=e147] [cursor=pointer]:
+                  - radio "Services" [checked] [active]
+                  - generic [ref=e149] [cursor=pointer]: Services
+          - generic [ref=e151]:
+            - generic [ref=e153]:
+              - heading "Service" [level=1] [ref=e155]
+              - paragraph [ref=e157]: (0) wishlist
+            - generic [ref=e158]:
+              - img "Not Found" [ref=e159]
+              - paragraph [ref=e160]: Sorry no wishlist found !
+  - status [ref=e166]: Success
+```

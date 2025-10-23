@@ -93,7 +93,7 @@ exports.EventPage = class EventPage {
       const previewCount = await imagePreview.count();
       
       if (previewCount > 0) {
-        console.log(`✓ Image preview found! (${previewCount} preview elements)`);
+        console.log(` Image preview found! (${previewCount} preview elements)`);
         // Log the actual image sources for debugging
         const imageSrcs = await imagePreview.evaluateAll(imgs => imgs.map(img => img.src));
         console.log('Image sources:', imageSrcs);
@@ -112,9 +112,9 @@ exports.EventPage = class EventPage {
         console.log(`Visible images with proper dimensions: ${visibleImages}`);
         
         if (visibleImages > 0) {
-          console.log('✓ Image is actually visible in UI with proper dimensions');
+          console.log(' Image is actually visible in UI with proper dimensions');
         } else {
-          console.log('⚠ Image uploaded but may not be properly visible');
+          console.log(' Image uploaded but may not be properly visible');
         }
         
         // Wait for image to be fully loaded
@@ -189,7 +189,7 @@ exports.EventPage = class EventPage {
     
     // Click the publish button
     await this.publishButton.click();
-    console.log('✓ Clicked Publish Event button');
+    console.log(' Clicked Publish Event button');
     
     // Wait for navigation or success message
     await this.page.waitForTimeout(3000);
@@ -197,7 +197,7 @@ exports.EventPage = class EventPage {
     // Check if we're still on the same page (validation error)
     const currentUrl = this.page.url();
     if (currentUrl.includes('/create') || currentUrl.includes('/new')) {
-      console.log('⚠ Still on create page - checking for validation errors...');
+      console.log(' Still on create page - checking for validation errors...');
       
       // Look for validation errors
       const errorMessages = await this.page.locator('.ant-form-item-explain-error, [class*="error"]').all();
@@ -214,7 +214,7 @@ exports.EventPage = class EventPage {
         }
       }
     } else {
-      console.log('✓ Navigated away from create page - publish likely successful');
+      console.log(' Navigated away from create page - publish likely successful');
     }
   }
 

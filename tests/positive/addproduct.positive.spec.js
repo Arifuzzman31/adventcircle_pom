@@ -47,8 +47,8 @@ test.describe('Add Product - Positive Tests', () => {
             
             throw error;
         }
-        
-        console.log(' TEST COMPLETED: Add product test with page object finished');
+
+        console.log('  TEST COMPLETED: Add product test with page object finished');
     });
 
 });

@@ -414,7 +414,7 @@ class AddProductPage {
                 // Method 1: Look for product by exact title
                 const exactMatch = await this.page.locator(`text="${productTitle}"`).isVisible({ timeout: 5000 });
                 if (exactMatch) {
-                    console.log(` ✅ Product "${productTitle}" found by exact text match on attempt ${attempt}`);
+                    console.log(`  Product "${productTitle}" found by exact text match on attempt ${attempt}`);
                     return true;
                 }
                 
@@ -423,7 +423,7 @@ class AddProductPage {
                 const cellCount = await productCells.count();
                 
                 if (cellCount > 0) {
-                    console.log(` ✅ Product "${productTitle}" found in ${cellCount} table cell(s) on attempt ${attempt}`);
+                    console.log(` Product "${productTitle}" found in ${cellCount} table cell(s) on attempt ${attempt}`);
                     return true;
                 }
                 
@@ -432,7 +432,7 @@ class AddProductPage {
                 const rowCount = await productRows.count();
                 
                 if (rowCount > 0) {
-                    console.log(` ✅ Product "${productTitle}" found in ${rowCount} table row(s) on attempt ${attempt}`);
+                    console.log(`  Product "${productTitle}" found in ${rowCount} table row(s) on attempt ${attempt}`);
                     return true;
                 }
                 

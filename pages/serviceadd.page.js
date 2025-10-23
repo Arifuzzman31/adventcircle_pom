@@ -110,10 +110,17 @@ class ServiceAddPage {
 
     async fillDetailedDescription(description) {
         console.log(` Filling detailed description: ${description}`);
-        await this.page.locator('.flex > button:nth-child(3)').click();
-        await this.page.getByRole('paragraph').filter({ hasText: /^$/ }).click();
+        // Click on the description editor to activate it
+        await this.descriptionEditor.click();
+        await this.page.waitForTimeout(1000); // Allow editor to initialize
+        
+        // Fill the description text
         await this.descriptionEditor.fill(description);
-        await this.page.locator('.ant-btn.css-s3wiz3.ant-btn-primary.ant-btn-color-primary.ant-btn-variant-solid.ant-btn-sm').click();
+        await this.page.waitForTimeout(1000); // Allow content to be set
+        
+        // Click outside the editor to save/apply changes (optional)
+        await this.page.click('body');
+        console.log(` Description filled successfully: ${description}`);
     }
 
     async fillPricingDetails({ basePrice, discount, maxDiscount, tax }) {
@@ -156,52 +163,72 @@ class ServiceAddPage {
     }
 
     async uploadImages({ thumbnailImage, serviceImage }) {
-        console.log(' Uploading images...');
+        console.log(' Uploading service images (REQUIRED)');
+        
         try {
-            // --- THUMBNAIL UPLOAD (improved method) ---
+            // Upload thumbnail image (MANDATORY)
             console.log(' Uploading thumbnail image...');
             
-            // Method 1: Click the thumbnail upload area to activate file input
-            await this.page.locator('div').filter({ hasText: /^Thumbnail Image Only \*\.png, \*\.jpg and \*\.jpeg files are accepted$/ }).locator('svg').click();
-            await this.page.waitForTimeout(1000);
-            
-            // Find the file input that appears after clicking
-            const fileInputs = await this.page.locator('input[type="file"]').all();
-            console.log(` Found ${fileInputs.length} file inputs after clicking thumbnail area`);
-            
-            if (fileInputs.length > 0) {
-                await fileInputs[0].setInputFiles(thumbnailImage);
-                console.log('  Thumbnail uploaded successfully');
-                await this.page.waitForTimeout(2000);
-            } else {
-                throw new Error('No file input found for thumbnail upload');
-            }
-
-            // --- SERVICE IMAGE UPLOAD ---
-            console.log(' Uploading service image...');
+            // Method 1: Try with direct file input approach
             try {
-                await this.serviceImageUpload.click();
-                await this.page.waitForTimeout(1000);
-                const updatedFileInputs = await this.page.locator('input[type="file"]').all();
-                console.log(` Found ${updatedFileInputs.length} file inputs for service image`);
-                
-                if (updatedFileInputs.length > 1) {
-                    await updatedFileInputs[1].setInputFiles(serviceImage);
-                    console.log('  Service image uploaded via second file input');
-                } else if (updatedFileInputs.length === 1) {
-                    await updatedFileInputs[0].setInputFiles(serviceImage);
-                    console.log('  Service image uploaded via first file input');
-                }
+                const thumbnailInput = this.page.locator('input[type="file"]').first();
+                await thumbnailInput.setInputFiles(thumbnailImage);
                 await this.page.waitForTimeout(2000);
-            } catch (serviceImageError) {
-                console.log('  Service image upload failed:', serviceImageError.message);
+                console.log(' Thumbnail image uploaded via direct input');
+            } catch (directError) {
+                // Method 2: Try clicking trigger then finding input
+                console.log(' Trying thumbnail upload with trigger click...');
+                await this.thumbnailUpload.click();
+                await this.page.waitForTimeout(1000);
+                
+                const thumbnailFileInput = this.page.locator('input[type="file"]').first();
+                await thumbnailFileInput.setInputFiles(thumbnailImage);
+                await this.page.waitForTimeout(2000);
+                console.log(' Thumbnail image uploaded via trigger');
             }
             
-            console.log('  Image upload process completed');
+            // Upload service image (MANDATORY)
+            console.log(' Uploading service image...');
+            
+            try {
+                // Try to find and use the second file input
+                const serviceImageInput = this.page.locator('input[type="file"]').nth(1);
+                const inputExists = await serviceImageInput.isVisible({ timeout: 3000 });
+                
+                if (inputExists) {
+                    await serviceImageInput.setInputFiles(serviceImage);
+                    await this.page.waitForTimeout(2000);
+                    console.log(' Service image uploaded via direct input');
+                } else {
+                    // Try clicking the upload trigger first
+                    await this.serviceImageUpload.click();
+                    await this.page.waitForTimeout(1000);
+                    
+                    const serviceFileInput = this.page.locator('input[type="file"]').nth(1);
+                    await serviceFileInput.setInputFiles(serviceImage);
+                    await this.page.waitForTimeout(2000);
+                    console.log(' Service image uploaded via trigger');
+                }
+            } catch (serviceImageError) {
+                console.log(' Trying alternative service image upload method...');
+                // Alternative approach: look for any available file input
+                const availableInputs = this.page.locator('input[type="file"]');
+                const inputCount = await availableInputs.count();
+                
+                if (inputCount > 1) {
+                    await availableInputs.nth(1).setInputFiles(serviceImage);
+                    await this.page.waitForTimeout(2000);
+                    console.log(' Service image uploaded via alternative method');
+                } else {
+                    throw new Error('Could not find service image input');
+                }
+            }
+            
+            console.log(' All required service images uploaded successfully');
             return true;
             
         } catch (error) {
-            console.log('  Overall image upload failed:', error.message);
+            console.log(' Overall service image upload failed:', error.message);
             // Make the test fail if images can't be uploaded since they're required
             throw new Error(`Image upload failed: ${error.message}. Service cannot be created without images.`);
         }
